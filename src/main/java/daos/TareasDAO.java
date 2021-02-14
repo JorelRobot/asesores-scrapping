@@ -40,6 +40,19 @@ public class TareasDAO {
         return tareas;
     }
 
+    public List<Tarea> getTareasByAlumnoYMateria(String nombre, String materia) {
+        List<Tarea> tareas = new ArrayList<>();
+        List<AlumnoTarea> data_alumno = getDataByNombreAlumno(nombre);
+
+        for (AlumnoTarea at : data_alumno){
+            if (at.getTarea().getMateria().equals(materia)) {
+                tareas.add(at.getTarea());
+            }
+        }
+
+        return tareas;
+    }
+
     public List<String> getMateriasByNombreAlumno(String nombre) {
         List<String> materias = new ArrayList<>();
         List<AlumnoTarea> data_alumno = getDataByNombreAlumno(nombre);

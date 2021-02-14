@@ -12,9 +12,8 @@ public class Test {
 
         TareasReport tr = new TareasReport(input);
 
-        for (Alumno alumno : tr.getTareasDAO().getAllAlumnos()){
-            System.out.println(alumno.getNombre());
-            System.out.println(alumno.getEmail());
+        for (String template : tr.createReportForEachAlumnos()){
+            System.out.println(template);
             System.out.println();
         }
     }
