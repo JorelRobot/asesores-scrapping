@@ -97,6 +97,10 @@ public class TareaScrapper {
         }
     }
 
+    public Tarea getTarea() {
+        return tarea;
+    }
+
     public List<AlumnoTarea> getAlumnosTareas() {
         return alumnosTareas;
     }

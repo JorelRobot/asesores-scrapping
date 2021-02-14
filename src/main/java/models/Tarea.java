@@ -11,6 +11,13 @@ public class Tarea {
 
     }
 
+    public Tarea(String nombre, String seccion, String urlTarea, String materia) {
+        this.nombre = nombre;
+        this.seccion = seccion;
+        this.urlTarea = urlTarea;
+        this.materia = materia;
+    }
+
     public String getNombre() {
         return nombre;
     }

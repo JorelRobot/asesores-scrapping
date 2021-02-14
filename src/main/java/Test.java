@@ -1,3 +1,4 @@
+import models.Alumno;
 import reports.TareasReport;
 
 import java.io.File;
@@ -9,10 +10,13 @@ public class Test {
 
         File input = new File("/home/amsi/Documentos/Asesorias_Academicas_Pantillas/Comprension_de_la_ciencia");
 
-        TareasReport tr = new TareasReport(Arrays.asList(input));
+        TareasReport tr = new TareasReport(input);
 
-        System.out.println(tr.getAlumnoTareas().get(0).getAlumno().getNombre());
-
+        for (Alumno alumno : tr.getTareasDAO().getAllAlumnos()){
+            System.out.println(alumno.getNombre());
+            System.out.println(alumno.getEmail());
+            System.out.println();
+        }
     }
 
 }

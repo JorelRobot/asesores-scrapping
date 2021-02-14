@@ -1,41 +1,34 @@
 package reports;
 
-import converters.JsoupConverter;
-import models.AlumnoTarea;
-import org.jsoup.nodes.Document;
-import scrappers.TareaScrapper;
+import daos.TareasDAO;
+import parsers.JsoupFileParser;
+import recolectors.TareasRecolector;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TareasReport {
 
-    private List<AlumnoTarea> alumnoTareas;
-    private List<Document> documents;
-    private List<String> reports;
+    private List<File> inputs; // Ya sean directorios o archivos
+    private File input; // Ya sea directorio o archivo
+    private TareasRecolector tareasRecolector;
+    private TareasDAO tareasDAO;
 
     public TareasReport() {
     }
 
-    public TareasReport(List<File> directorios) {
-        this.documents = JsoupConverter.extractDocsFromDirectories(directorios);
-        this.alumnoTareas = new ArrayList<>();
-        setAlumnoTareas();
+    public TareasReport(List<File> inputs) {
+        this.inputs = inputs;
     }
 
-    private void setAlumnoTareas() {
-        for (Document doc : documents){
-            TareaScrapper ts = new TareaScrapper(doc);
-            alumnoTareas.addAll(ts.getAlumnosTareas());
-        }
+    public TareasReport(File input) {
+        this.input = input;
+
+        tareasRecolector = new TareasRecolector(JsoupFileParser.parseDirectoryFiles(this.input));
+        tareasDAO = new TareasDAO(tareasRecolector.getAlumnosTareas());
     }
 
-    public List<AlumnoTarea> getAlumnoTareas() {
-        return alumnoTareas;
-    }
-
-    private void createReports() {
-
+    public TareasDAO getTareasDAO() {
+        return tareasDAO;
     }
 }
