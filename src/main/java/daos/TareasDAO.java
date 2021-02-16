@@ -39,6 +39,19 @@ public class TareasDAO {
 
         return tareas;
     }
+    
+    public String getStatusTareaByAlumnoAndTarea(String nombre, Tarea tarea) {
+        List<AlumnoTarea> data_alumno = getDataByNombreAlumno(nombre);
+        String status_tarea = "";
+
+        for (AlumnoTarea at : data_alumno){
+            if (at.getTarea().getUrlTarea().equals(tarea.getUrlTarea())){
+                status_tarea = at.getStatus();
+            }
+        }
+
+        return status_tarea;
+    }
 
     public List<Tarea> getTareasByAlumnoYMateria(String nombre, String materia) {
         List<Tarea> tareas = new ArrayList<>();

@@ -48,8 +48,9 @@ public class TareasReport {
 
                 for (Tarea t : materia_tareas) {
 
+                    String tarea_status = tareasDAO.getStatusTareaByAlumnoAndTarea(al.getNombre(), t);
                     template += "\n\n\t\tTarea: " + t.getNombre() + "\n\t\tSeccion: " + t.getSeccion() +
-                                "\n\t\tURL Tarea: " + t.getUrlTarea();
+                                "\n\t\tURL Tarea: " + t.getUrlTarea() + "\n\t\tStatus Tarea: " + tarea_status;
                 }
             }
             //*/
