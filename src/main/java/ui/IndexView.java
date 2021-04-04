@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import reports.TareasReport;
 
 /**
@@ -164,18 +165,21 @@ public class IndexView extends javax.swing.JPanel {
 
     private void continuarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continuarButtonActionPerformed
         
-        File directory = new File(directorySelected.getText());
-        
-        //*/
-        TareasReport tr = new TareasReport(directory);
-        List<String> reportes = tr.createReportForEachAlumnos();
-        
-        
-        for(String reporte : reportes){
-            System.out.println(reporte);
-        }
-        
-        //*/
+        if (archivos_cargados.getModel().getSize() != 0) {
+            File directory = new File(directorySelected.getText());
+
+            //*/
+            TareasReport tr = new TareasReport(directory);
+            List<String> reportes = tr.createReportForEachAlumnos();
+
+            for (String reporte : reportes) {
+                System.out.println(reporte);
+            }
+
+            //*/
+        } else {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un directorio antes de continuar", "Advertencia", JOptionPane.ERROR_MESSAGE);
+        }        
     }//GEN-LAST:event_continuarButtonActionPerformed
 
 
