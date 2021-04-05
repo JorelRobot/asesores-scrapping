@@ -27,6 +27,9 @@ public class TareasReport {
         this.inputs = inputs;
     }
 
+    /**
+     * @param input Directorio del cual se extraeran los archivos
+     */
     public TareasReport(File input) {
         this.input = input;
 
@@ -40,7 +43,7 @@ public class TareasReport {
 
         // Por cada alumno
         for (Alumno al : tareasDAO.getAllAlumnos()) {
-            String template = "Alumno: " + al.getNombre() + "\nEmail: " + al.getEmail();
+            String template = " Alumno: " + al.getNombre() + "\n Email: " + al.getEmail();
 
             //*/
             // Por cada una de sus materias

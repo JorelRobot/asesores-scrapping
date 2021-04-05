@@ -47,6 +47,7 @@ public class IndexView extends javax.swing.JPanel {
         archivos_cargados = new javax.swing.JList<>();
         jLabel1 = new javax.swing.JLabel();
         continuarButton = new javax.swing.JButton();
+        makeEmailsCheckBox = new javax.swing.JCheckBox();
 
         jList1.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -87,14 +88,12 @@ public class IndexView extends javax.swing.JPanel {
             }
         });
 
+        makeEmailsCheckBox.setText("Correos Automaticos");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(encabezado)
-                .addGap(73, 73, 73))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -102,16 +101,22 @@ public class IndexView extends javax.swing.JPanel {
                         .addComponent(depto))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(43, 43, 43)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(directorySelected, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(examinarButton))
-                            .addComponent(jLabel1)
-                            .addComponent(creditosLabel)
-                            .addComponent(continuarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(makeEmailsCheckBox)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jScrollPane1)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(directorySelected, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(examinarButton))
+                                .addComponent(jLabel1)
+                                .addComponent(creditosLabel)
+                                .addComponent(continuarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap(39, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(encabezado)
+                .addGap(73, 73, 73))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,9 +133,11 @@ public class IndexView extends javax.swing.JPanel {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(43, 43, 43)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addComponent(makeEmailsCheckBox)
+                .addGap(18, 18, 18)
                 .addComponent(continuarButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(creditosLabel)
                 .addGap(28, 28, 28))
         );
@@ -149,37 +156,48 @@ public class IndexView extends javax.swing.JPanel {
             if ((file == null) || (file.getName().equals(""))) {
                 directorySelected.setText(file.getName());
             } else {
-                directorySelected.setText(file.getAbsolutePath());
-                DefaultListModel<String> lista = new DefaultListModel<>();
 
-                for (File f : file.listFiles()) {
-                    if (!f.isDirectory()) {
-                        lista.addElement(f.getAbsolutePath());
+                if (file.listFiles().length != 0) {
+                    directorySelected.setText(file.getAbsolutePath());
+                    DefaultListModel<String> lista = new DefaultListModel<>();
+
+                    for (File f : file.listFiles()) {
+                        if (!f.isDirectory()) {
+                            lista.addElement(f.getAbsolutePath());
+                        }
                     }
-                }
 
-                archivos_cargados.setModel(lista);
+                    archivos_cargados.setModel(lista);
+                } else {
+                    JOptionPane.showMessageDialog(this, "El directorio seleccionado esta vacio", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                }
             }
         }
     }//GEN-LAST:event_examinarButtonActionPerformed
 
     private void continuarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continuarButtonActionPerformed
-        
+
         if (archivos_cargados.getModel().getSize() != 0) {
             File directory = new File(directorySelected.getText());
 
-            //*/
             TareasReport tr = new TareasReport(directory);
             List<String> reportes = tr.createReportForEachAlumnos();
+            String str_reportes = "";
 
             for (String reporte : reportes) {
-                System.out.println(reporte);
+                //System.out.println(reporte);
+                str_reportes += "\n" + reporte + "\n";
             }
 
-            //*/
+            JOptionPane.showMessageDialog(this, "Proceso completado", "Notificacion", JOptionPane.INFORMATION_MESSAGE);
+
+            PreviewResults pr = new PreviewResults(null, true);
+            pr.setTextInResultTextArea(str_reportes);
+            pr.show();
+
         } else {
-            JOptionPane.showMessageDialog(this, "Debes seleccionar un directorio antes de continuar", "Advertencia", JOptionPane.ERROR_MESSAGE);
-        }        
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un directorio antes de continuar", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_continuarButtonActionPerformed
 
 
@@ -196,5 +214,6 @@ public class IndexView extends javax.swing.JPanel {
     private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JCheckBox makeEmailsCheckBox;
     // End of variables declaration//GEN-END:variables
 }

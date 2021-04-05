@@ -9,7 +9,7 @@ import java.util.List;
 
 public class TareasDAO {
 
-    List<AlumnoTarea> data; // Todos los datos recolectados de los archivos
+    List<AlumnoTarea> data; // Todos los datos recolectados/relacionados de los archivos
 
     public TareasDAO(List<AlumnoTarea> data) {
         this.data = data;

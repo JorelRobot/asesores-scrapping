@@ -9,6 +9,7 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 public class TareaScrapper {
 
@@ -30,15 +31,19 @@ public class TareaScrapper {
         alumnos = new ArrayList<>();
         alumnosTareas = new ArrayList<>();
 
-        setNombreTarea();
-        setSeccionTarea();
-        setUrlTarea();
-        setMateriaTarea();
-        setAlumnos();
+        try {
+            setNombreTarea();
+            setSeccionTarea();
+            setUrlTarea();
+            setMateriaTarea();
+            setAlumnos();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "El archivo no se puede analizar", "Error",  JOptionPane.ERROR_MESSAGE);
+        }
 
     }
 
-    private void setNombreTarea() {
+    private void setNombreTarea() throws Exception {
         Elements lis_elems = document.select("li.breadcrumb-item");
 
         for (Element li : lis_elems) {
@@ -50,7 +55,7 @@ public class TareaScrapper {
         }
     }
 
-    private void setSeccionTarea() {
+    private void setSeccionTarea() throws Exception {
         Elements lis_elems = document.select("li.breadcrumb-item");
 
         for (Element li : lis_elems) {
@@ -63,7 +68,7 @@ public class TareaScrapper {
         }
     }
 
-    private void setUrlTarea() {
+    private void setUrlTarea() throws Exception {
         Elements lis_elems = document.select("li.breadcrumb-item");
 
         for (Element li : lis_elems) {
@@ -75,12 +80,12 @@ public class TareaScrapper {
         }
     }
 
-    private void setMateriaTarea() {
+    private void setMateriaTarea() throws Exception {
         Elements h1s = document.getElementsByTag("h1");
         tarea.setMateria(h1s.first().text());
     }
 
-    private void setAlumnos() {
+    private void setAlumnos() throws Exception {
         Elements filas_alumnos = document.select("tr[class*=user]");
 
         int i = 0;
@@ -103,5 +108,14 @@ public class TareaScrapper {
 
     public List<AlumnoTarea> getAlumnosTareas() {
         return alumnosTareas;
+    }
+
+    public boolean isAnalizable() {
+
+        if (alumnos.isEmpty() || alumnosTareas.isEmpty()) {
+            return false;
+        }
+
+        return true;
     }
 }
