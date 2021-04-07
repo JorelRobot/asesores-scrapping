@@ -5,13 +5,19 @@
  */
 package ui;
 
+import java.net.PasswordAuthentication;
+import java.util.List;
 import javax.swing.text.DefaultCaret;
+import models.EmailReport;
 
 /**
  *
  * @author joel
  */
 public class PreviewResults extends javax.swing.JDialog {
+    
+    private PasswordAuthentication passwordAuthentication;
+    private List<EmailReport> emailReports;
 
     /**
      * Creates new form PreviewResults
@@ -22,6 +28,8 @@ public class PreviewResults extends javax.swing.JDialog {
         DefaultCaret caret = (DefaultCaret) resultsTextArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -35,7 +43,8 @@ public class PreviewResults extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         resultsTextArea = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
+        aceptarButton = new javax.swing.JButton();
+        sendEmailsButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -48,10 +57,17 @@ public class PreviewResults extends javax.swing.JDialog {
         resultsTextArea.setRows(5);
         jScrollPane1.setViewportView(resultsTextArea);
 
-        jButton1.setText("Aceptar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        aceptarButton.setText("Aceptar");
+        aceptarButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                aceptarButtonActionPerformed(evt);
+            }
+        });
+
+        sendEmailsButton.setText("Enviar Correos");
+        sendEmailsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendEmailsButtonActionPerformed(evt);
             }
         });
 
@@ -61,7 +77,11 @@ public class PreviewResults extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(sendEmailsButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(aceptarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                             .addGap(44, 44, 44)
@@ -79,17 +99,35 @@ public class PreviewResults extends javax.swing.JDialog {
                 .addGap(34, 34, 34)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(aceptarButton)
+                    .addComponent(sendEmailsButton))
                 .addGap(16, 16, 16))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void aceptarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aceptarButtonActionPerformed
         // TODO add your handling code here:
         dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_aceptarButtonActionPerformed
+
+    private void sendEmailsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendEmailsButtonActionPerformed
+        // TODO add your handling code here:
+        
+        Credenciales authDialog = new Credenciales(null, rootPaneCheckingEnabled);
+        authDialog.setLocationRelativeTo(null);
+        authDialog.setVisible(true);
+        
+        passwordAuthentication = authDialog.getPasswordAuthentication();
+                
+        if (passwordAuthentication != null && !passwordAuthentication.getUserName().isEmpty() && passwordAuthentication.getPassword().length != 0) {
+            HTMLPrevewResults htmlpr = new HTMLPrevewResults(null, rootPaneCheckingEnabled);
+            htmlpr.setEmailReports(emailReports);
+            htmlpr.setVisible(true);
+        }
+    }//GEN-LAST:event_sendEmailsButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -137,10 +175,15 @@ public class PreviewResults extends javax.swing.JDialog {
         resultsTextArea.setText(text);
     }
 
+    public void setEmailReports(List<EmailReport> emailReports) {
+        this.emailReports = emailReports;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton aceptarButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea resultsTextArea;
+    private javax.swing.JButton sendEmailsButton;
     // End of variables declaration//GEN-END:variables
 }

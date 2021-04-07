@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import models.EmailReport;
 
 public class TareasReport {
 
@@ -55,8 +56,8 @@ public class TareasReport {
                 for (Tarea t : materia_tareas) {
 
                     String tarea_status = tareasDAO.getStatusTareaByAlumnoAndTarea(al.getNombre(), t);
-                    template += "\n\n\t\tTarea: " + t.getNombre() + "\n\t\tSeccion: " + t.getSeccion() +
-                            "\n\t\tURL Tarea: " + t.getUrlTarea() + "\n\t\tStatus Tarea: " + tarea_status;
+                    template += "\n\n\t\tTarea: " + t.getNombre() + "\n\t\tSeccion: " + t.getSeccion()
+                            + "\n\t\tURL Tarea: " + t.getUrlTarea() + "\n\t\tStatus Tarea: " + tarea_status;
                 }
             }
             //*/
@@ -66,6 +67,59 @@ public class TareasReport {
         generateCSVReport();
 
         return templates;
+    }
+
+    public List<EmailReport> createEmailReportForEachAlumnos() {
+
+        //List<String> templates = new ArrayList<>();
+        List<EmailReport> emailReports = new ArrayList<>();
+
+        // Por cada alumno
+        for (Alumno al : tareasDAO.getAllAlumnos()) {
+            String template = "<h2>Reporte de actividades</h2><br>";
+
+            EmailReport er = new EmailReport();
+            er.setAlumno(al.getNombre());
+            er.setEmail(al.getEmail());
+
+            template += "<p>Estimado " + al.getNombre() + " se te hace notificacion del status de tus actividades, por favor, "
+                    + "te sugerimos terminar con tus actividades pendientes. A continuacion se encuentra tu reporte personalizado"
+                    + " de actividades:</p>";
+
+            //*/
+            // Por cada una de sus materias
+            for (String mat : tareasDAO.getMateriasByNombreAlumno(al.getNombre())) {
+                List<Tarea> materia_tareas = tareasDAO.getTareasByAlumnoYMateria(al.getNombre(), mat);
+
+                template += "<br>&nbsp&nbsp&nbsp&nbsp<strong>Materia: </strong>" + mat;
+
+                // Por cada una de sus tareas
+                for (Tarea t : materia_tareas) {
+
+                    String formato_status = "";
+
+                    String tarea_status = tareasDAO.getStatusTareaByAlumnoAndTarea(al.getNombre(), t);
+
+                    if (tarea_status.contains("Sin entrega") && tarea_status.contains("Calificado")) {
+                        formato_status = "<span style='color: orange;'>" + tarea_status + "</span>";
+                    } else if (tarea_status.contains("Sin entrega")) {
+                        formato_status = "<span style='color: red;'>" + tarea_status + "</span>";
+                    } else {
+                        formato_status = "<span style='color: green;'>" + tarea_status + "</span>";
+                    }
+
+                    template += "<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<strong>Tarea: </strong>" + t.getNombre() + "<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<strong>Seccion: </strong>" + t.getSeccion()
+                            + "<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<strong>URL Tarea: </strong><a href='" + t.getUrlTarea() + " style='color: blue;'>" + t.getUrlTarea() + "</a><br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<strong>Status Tarea: </strong>" + formato_status + "<br>";
+                }
+            }
+            //*/
+
+            er.setContenido(template);
+            emailReports.add(er);
+            //templates.add(template);
+        }
+
+        return emailReports;
     }
 
     public String generateCSVReport() {
@@ -91,7 +145,6 @@ public class TareasReport {
             w.write("Alumno, Materia, Tarea, URL-Tarea, Status\n");
 
             // ESCRITURA ===============================================================================================
-
             // Por cada alumno
             for (Alumno al : tareasDAO.getAllAlumnos()) {
                 String template = al.getNombre();
